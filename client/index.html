@@ -20,6 +20,7 @@
     <!-- build:css({.tmp,client}) app/app.css -->
     <link rel="stylesheet" href="app/app.css">
       <!-- injector:css -->
+      <link rel="stylesheet" href="app/about/about.css">
       <link rel="stylesheet" href="app/app.css">
       <link rel="stylesheet" href="app/main/main.css">
       <!-- endinjector -->
@@ -64,11 +65,16 @@
         <!-- build:js({.tmp,client}) app/app.js -->
         <script src="app/app.js"></script>
           <!-- injector:js -->
+          <script src="app/about/about.controller.js"></script>
+          <script src="app/about/about.js"></script>
           <script src="app/main/main.controller.js"></script>
           <script src="app/main/main.js"></script>
           <script src="components/facebook/facebook.service.js"></script>
+          <script src="components/frontend/frontend.service.js"></script>
+          <script src="components/googlemap/googlemap.service.js"></script>
           <script src="components/navbar/navbar.controller.js"></script>
           <script src="components/socket/socket.service.js"></script>
+          <script src="components/travel/travel.service.js"></script>
           <!-- endinjector -->
         <!-- endbuild -->
 </body>

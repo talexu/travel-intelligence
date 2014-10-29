@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('travelIntelligenceApp')
-  .controller('MainCtrl', function ($scope, socket, facebook) {
+  .controller('MainCtrl', function ($scope, socket, facebook, googlemap, travel, frontend) {
     $scope.message = 'Hello';
 		
     $scope.sendMessage = function () {

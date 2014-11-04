@@ -66,7 +66,7 @@
 <div class="container">
 	<div class="row clearfix">
 <div class="col-md-10 column">
-<div id='bck'>
+<div id='bck' class="bck_font">
   <div id="all"> 
    <div class="form-group">
         <input id="searchcontent" type="text"  placeholder="Search">

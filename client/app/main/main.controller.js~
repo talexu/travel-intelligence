@@ -26,11 +26,8 @@ angular.module('travelIntelligenceApp')
 		$("#showit").click(function () {
 			if ($("#quickview").is(":visible"))
 				$("#quickview").slideUp();
-			else {
+			else
 				$("#quickview").slideDown();
-				$("#quickview").focus();
-
-			}
 		});
 	});
 	// Google map end

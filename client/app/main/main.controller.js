@@ -5,7 +5,8 @@ angular.module('travelIntelligenceApp')
 
 	// Google map
 	$scope.$on('$viewContentLoaded', function (event) {
-		googlemap.initialize();
+		//googlemap.initialize();
+		google.maps.event.addDomListener(window, 'load', googlemap.initialize());
 		$("#searchbar").click(function () {
 			$.ajax({
 				dataType : "json",

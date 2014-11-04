@@ -35,7 +35,7 @@
     background-color: #CCC;
   }
 .bck_font {
-color:#000000;
+color:#007FFF;
 }
 .infowindow {
 	font-size:24px;
@@ -191,7 +191,7 @@ margin-right: 0;
 margin-left: 0;
 }
 .fb-input {
-color: #000000;
+color: #007FFF;
 }
 /*
  * Features section

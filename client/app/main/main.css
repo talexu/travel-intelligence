@@ -28,3 +28,40 @@
     margin-top: 70px;
     border-top: 1px solid #E5E5E5;
 }
+
+#map-canvas {
+    //width: 100%;
+    height: 650px;
+    background-color: #CCC;
+  }
+.infowindow {
+	font-size:24px;
+	width: 250px;
+	color: green;
+	font-family:Arial, Helvetica, sans-serif;
+  }
+
+
+#all {
+	background-color: rgba(255, 255, 255, 0.9);
+}
+#bck {
+	background: url(Rakuten.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+body {
+	padding-top: 20px;
+	font-size: 16px;
+	font-family: "Open Sans",serif;
+	background: transparent;
+}
+
+html {
+	height: 100%;
+	margin: 0px;
+	padding: 0px
+}

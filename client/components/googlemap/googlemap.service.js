@@ -275,6 +275,32 @@ var maketable = function(DS, iter)  {
 
 		});
 		//alert($.param(success));
+		//
+		$("#searchbar").click(function () {
+			$.ajax({
+				dataType : "json",
+				url : "https://app.rakuten.co.jp/services/api/Travel/KeywordHotelSearch/20131024?format=json&datumType=1&keyword=" + $("#searchcontent").val() + "&applicationId=1040051729687398622",
+				data : "",
+				success : function (data) {
+					alert(data["hotels"][0]["hotel"][0]["hotelBasicInfo"]["longitude"]);
+					alert(data["hotels"][0]["hotel"][0]["hotelBasicInfo"]["latitude"]);
+					map.panTo(new google.maps.LatLng(data["hotels"][0]["hotel"][0]["hotelBasicInfo"]["latitude"], data["hotels"][0]["hotel"][0]["hotelBasicInfo"]["longitude"]));
+				}
+
+			});
+
+			alert($("#searchcontent").val());
+		});
+
+		$("#showit").click(function () {
+			if ($("#quickview").is(":visible"))
+				$("#quickview").slideUp();
+			else {
+				$("#quickview").slideDown();
+				$("#quickview").focus();
+
+			}
+		});
 
 	}
 	

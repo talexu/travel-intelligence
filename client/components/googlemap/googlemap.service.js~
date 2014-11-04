@@ -176,12 +176,20 @@ angular.module('travelIntelligenceApp')
 			}
 		];
 
+var maketable = function(DS, iter)  {
+  infowindow.setContent('<table border="2" bgcolor="#00FF00" class="table table-hover"><caption id="panel_hotel_name">' + DS["hotels"][iter]["hotel"][0]["hotelBasicInfo"]["hotelName"] + '</caption><tbody><tr class="info" id="attr1"><td><img src="'+DS["hotels"][iter]["hotel"][0]["hotelBasicInfo"]["hotelThumbnailUrl"]+'"><br><img src="'+DS["hotels"][iter]["hotel"][0]["hotelBasicInfo"]["roomThumbnailUrl"]+'"></td><td><ul><li><a href="'+DS["hotels"][iter]["hotel"][0]["hotelBasicInfo"]["hotelInformationUrl"]+'">Book Now!</a></p>\
+</li><li>'+DS["hotels"][iter]["hotel"][0]["hotelBasicInfo"]["userReview"]+'</li><li>' + DS["hotels"][iter]["hotel"][0]["hotelBasicInfo"]["address1"]+DS["hotels"][iter]["hotel"][0]["hotelBasicInfo"]["address2"] 
++ '</li><li><div id="star">'+ DS["hotels"][iter]["hotel"][0]["hotelBasicInfo"]["reviewAverage"]  +'</div></li></ul></td></tr></tbody></table>')
+
+}
+/*
+
 		var maketable = function (DS, iter) {
 			infowindow.setContent('<table class="table table-hover"><caption id="panel_hotel_name">' + DS["hotels"][iter]["hotel"][0]["hotelBasicInfo"]["hotelName"] + '</caption><tbody><tr id="attr1"><td><img src="hotelThumbnail.jpg"><br><img src="roomthumbnail.jpg"></td><td><ul><li><p>' + DS["hotels"][iter]["hotel"][0]["hotelBasicInfo"]["hotelInformationUrl"] + '</p>\
 								</li><li>' + DS["hotels"][iter]["hotel"][0]["hotelBasicInfo"]["userReview"] + '</li><li>ghi</li></ul></td></tr></tbody></table>')
 
 		}
-
+*/
 		var h = function () {
 
 			for (var i = 0; i < markerarr.length; i++)
@@ -267,6 +275,32 @@ angular.module('travelIntelligenceApp')
 
 		});
 		//alert($.param(success));
+		//
+		$("#searchbar").click(function () {
+			$.ajax({
+				dataType : "json",
+				url : "https://app.rakuten.co.jp/services/api/Travel/KeywordHotelSearch/20131024?format=json&datumType=1&keyword=" + $("#searchcontent").val() + "&applicationId=1040051729687398622",
+				data : "",
+				success : function (data) {
+					alert(data["hotels"][0]["hotel"][0]["hotelBasicInfo"]["longitude"]);
+					alert(data["hotels"][0]["hotel"][0]["hotelBasicInfo"]["latitude"]);
+					googlemap.map.panTo(new google.maps.LatLng(data["hotels"][0]["hotel"][0]["hotelBasicInfo"]["latitude"], data["hotels"][0]["hotel"][0]["hotelBasicInfo"]["longitude"]));
+				}
+
+			});
+
+			alert($("#searchcontent").val());
+		});
+
+		$("#showit").click(function () {
+			if ($("#quickview").is(":visible"))
+				$("#quickview").slideUp();
+			else {
+				$("#quickview").slideDown();
+				$("#quickview").focus();
+
+			}
+		});
 
 	}
 	

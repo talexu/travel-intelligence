@@ -1,8 +1,29 @@
 'use strict';
 
 angular.module('travelIntelligenceApp')
-.controller('MainCtrl', ['$scope', 'GoogleMapApi'.ns(), function ($scope, GoogleMapApi) {
+.controller('MainCtrl', ['$scope', 'GoogleMapApi'.ns(), 'facebook', function ($scope, GoogleMapApi, facebook) {
+	$scope.$on('$viewContentLoaded', function (event) {
+		$("#extruderRight").buildMbExtruder({
+                position:"right",
+                width:300,
+                positionFixed:false,
+                top:100,
+                extruderOpacity:.8,
+                onExtOpen:function(){},
+                onExtContentLoad:function(){},
+                onExtClose:function(){}
+            });
 
+		$("#extruderBottom").buildMbExtruder({
+                position:"bottom",
+                extruderOpacity:1,
+                onExtOpen:function(){},
+                onExtContentLoad:function(){},
+                onExtClose:function(){}
+
+            });
+	});
+	
 	//GoogleMap API key: AIzaSyDP9sT9ttOPhK8xhoqV5L6Uqg776GiVKjQ
 	$scope.map = {
 	    center: {

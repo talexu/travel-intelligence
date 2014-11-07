@@ -23,6 +23,7 @@
       <link rel="stylesheet" href="app/about/about.css">
       <link rel="stylesheet" href="app/app.css">
       <link rel="stylesheet" href="app/main/main.css">
+      <link rel="stylesheet" href="app/main/mbExtruder.css">
       <!-- endinjector -->
     <!-- endbuild -->
   </head>
@@ -32,6 +33,23 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container-fluid">
+			<ul class="nav navbar-nav navbar-left">
+				<li><a ng-href="/" target="_blank">Hotel</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a><fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button></a>
+				</li>
+				<li>
+					<div id="status"></div>
+				</li>
+				<li><a ng-href="/about" target="_blank">About</a></li>
+			</ul>
+		</div>
+	</nav>
     <div ui-view=""></div>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
@@ -70,8 +88,11 @@
           <!-- injector:js -->
           <script src="app/about/about.controller.js"></script>
           <script src="app/about/about.js"></script>
+          <script src="app/main/jquery.hoverIntent.min.js"></script>
+          <script src="app/main/jquery.mb.flipText.js"></script>
           <script src="app/main/main.controller.js"></script>
           <script src="app/main/main.js"></script>
+          <script src="app/main/mbExtruder.js"></script>
           <script src="components/facebook/facebook.service.js"></script>
           <script src="components/frontend/frontend.service.js"></script>
           <script src="components/googlemap/googlemap.service.js"></script>

@@ -1,11 +1,18 @@
 .search_bar {
+	height: 700px;
 	background-color: #f5f5f5;
 	border-right: 1px solid #eee;
+	padding-top: 15px;
+	padding-bottom: 15px;
 }
 .txb_addr_search {
-	width: 140px;
-	margin: 3px;
+	width: 180px;
+	margin: 0px;
+}
+.margin_button {
+	margin: 2px;
+	margin-left: 10px;
 }
 .angular-google-map-container {
-	height: 500px;
+	height: 700px;
 }

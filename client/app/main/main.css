@@ -33,7 +33,7 @@
 }
 #searching_results_panel {
 	margin-top: 0px;
-	overflow-y: auto;
+	overflow: auto;
 }
 .market_detail_row {
 	margin-left: 0px;

@@ -9,7 +9,7 @@
     <base href="/">
     <title></title>
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(client) app/vendor.css -->
       <!-- bower:css -->
@@ -33,7 +33,7 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-	<nav class="navbar navbar-default" role="navigation">
+	<nav id="navigation" class="navbar navbar-default nav-bar" role="navigation">
 		<div class="container-fluid">
 			<ul class="nav navbar-nav navbar-left">
 				<li><a ng-href="/" target="_blank">Hotel</a></li>
@@ -44,7 +44,7 @@
 </fb:login-button></a>
 				</li>
 				<li>
-					<div id="status"></div>
+					<a><div id="status"></div></a>
 				</li>
 				<li><a ng-href="/about" target="_blank">About</a></li>
 			</ul>
@@ -78,9 +78,11 @@
       <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
       <script src="bower_components/lodash/dist/lodash.compat.js"></script>
       <script src="bower_components/angular-google-maps/dist/angular-google-maps.js"></script>
+      <script src="bower_components/angular-pageslide-directive/dist/angular-pageslide-directive.js"></script>
       <!-- endbower -->
 			<script src="bower_components/socket.io-client/socket.io.js"></script>
 			<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+			<script src="bower_components/geolib/dist/geolib.min.js"></script>
     <!-- endbuild -->
 
         <!-- build:js({.tmp,client}) app/app.js -->
@@ -88,11 +90,8 @@
           <!-- injector:js -->
           <script src="app/about/about.controller.js"></script>
           <script src="app/about/about.js"></script>
-          <script src="app/main/jquery.hoverIntent.min.js"></script>
-          <script src="app/main/jquery.mb.flipText.js"></script>
           <script src="app/main/main.controller.js"></script>
           <script src="app/main/main.js"></script>
-          <script src="app/main/mbExtruder.js"></script>
           <script src="components/facebook/facebook.service.js"></script>
           <script src="components/frontend/frontend.service.js"></script>
           <script src="components/googlemap/googlemap.service.js"></script>

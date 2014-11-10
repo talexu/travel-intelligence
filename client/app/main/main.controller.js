@@ -1,28 +1,35 @@
 'use strict';
 
 angular.module('travelIntelligenceApp')
-.controller('MainCtrl', ['$scope', 'GoogleMapApi'.ns(), 'Logger'.ns(), 'facebook', function ($scope, GoogleMapApi, $log, facebook) {
+.controller('MainCtrl', ['$scope', '$timeout', 'GoogleMapApi'.ns(), 'Logger'.ns(), 'facebook', 'travel', function ($scope, $timeout, GoogleMapApi, $log, facebook, travel) {
+			$log.doLog = true;
+
+			// init
 			$scope.$on('$viewContentLoaded', function (event) {
-				$("#extruderRight").buildMbExtruder({
-					position : "right",
-					width : 300,
-					positionFixed : false,
-					top : 100,
-					extruderOpacity : .8,
-					onExtOpen : function () {},
-					onExtContentLoad : function () {},
-					onExtClose : function () {}
-				});
-
-				$("#extruderBottom").buildMbExtruder({
-					position : "bottom",
-					extruderOpacity : 1,
-					onExtOpen : function () {},
-					onExtContentLoad : function () {},
-					onExtClose : function () {}
-
-				});
+				resize();
 			});
+
+			$(window).resize(function () {
+				resize();
+			});
+
+			function resize() {
+				var windowHeight = $(window).height();
+				var contentHeight = windowHeight - $('#navigation').height() - 30;
+				$('#row_main').height(contentHeight);
+				$('.angular-google-map-container').height(contentHeight);
+				$('#searching_results_panel').height(windowHeight);
+			}
+			// init end
+
+			// search
+			$scope.query = {
+				keyword : '品川'
+			};
+			$scope.currentPage = 0;
+			$scope.pageCount = 0;
+			$scope.rightSlidingIsOpen = false;
+			// search end
 
 			//GoogleMap API key: AIzaSyDP9sT9ttOPhK8xhoqV5L6Uqg776GiVKjQ
 			angular.extend($scope, {
@@ -35,36 +42,150 @@ angular.module('travelIntelligenceApp')
 						var mockHeatLayer = new MockHeatLayer(layer);
 					},
 					showTraffic : true,
-					showBicycling : false,
-					showWeather : false,
-					showHeat : false,
+					showBicycling : true,
+					showWeather : true,
+					showHeat : true,
 					center : {
-						latitude : 45,
-						longitude : -73
+						latitude : 35.61,
+						longitude : 139.75
 					},
 					options : {
-						streetViewControl : false,
-						panControl : false,
+						streetViewControl : true,
+						panControl : true,
 						maxZoom : 20,
 						minZoom : 3
 					},
-					zoom : 3,
+					zoom : 6,
+					fit : true,
+					doClusterRandomMarkers : true,
 					bounds : {},
-					dragging: false,
-					events : {},
-
-				}
+					dragging : true,
+					events : {
+						// center_changed: function (map, eventName, originalEventArgs) {
+						// 							$log.info(originalEventArgs);
+						// 						}
+					},
+					clusterEvents : {
+						mouseover : function (cluster, clusterModels) {
+							var sum = 0;
+							_.each(clusterModels, function (model) {
+								sum += model.hotel[0].hotelBasicInfo.hotelMinCharge;
+							});
+							// alert(sum / clusterModels.length);
+							$log.info(sum / clusterModels.length);
+						}
+					},
+					clusterOptions : {
+						"gridSize" : 60,
+						"ignoreHidden" : true,
+						"minimumClusterSize" : 4
+					},
+					hotels : [],
+					testHotels : [{
+							id : 1,
+							latitude : 45,
+							longitude : -74,
+							showWindow : false,
+							options : {
+								animation : 1,
+								labelContent : 'Markers id 1',
+								labelAnchor : "22 0",
+								labelClass : "marker-labels"
+							}
+						}, {
+							id : 2,
+							latitude : 15,
+							longitude : 30,
+							showWindow : false,
+						}, {
+							id : 3,
+							icon : 'assets/images/plane.png',
+							latitude : 37,
+							longitude : -122,
+							showWindow : false,
+							title : 'Plane',
+							options : {
+								labelContent : 'Markers id 3',
+								labelAnchor : "26 0",
+								labelClass : "marker-labels"
+							}
+						}
+					],
+				},
 			});
 			GoogleMapApi.then(function (maps) {
 				$scope.googleVersion = maps.version;
 				maps.visualRefresh = true;
-				$log.info('$scope.map.rectangle.bounds set');
-				
-			});
 
+				$scope.$watch('map.center', function (newValue, oldValue) {
+					var distance = 6;
+					if ($scope.map.bounds.northeast && $scope.map.bounds.southwest) {
+						distance = geolib.getDistance($scope.map.bounds.northeast, $scope.map.bounds.southwest) / 1000;
+						$log.info("distance: " + distance);
+					}
+					travel.searchByLocation(newValue, distance / 2, function (data, status) {
+						$scope.map.fit = false;
+						injectHotels(data.hotels);
+					});
+				}, true);
+			});
+			$scope.refreshMap = function (location) {
+				//optional param if you want to refresh you can pass null undefined or false or empty arg
+				$scope.map.control.refresh(location);
+				$scope.map.control.getGMap().setZoom(11);
+				return;
+			};
 			$scope.getMapInstance = function () {
 				alert("You have Map Instance of" + $scope.map.control.getGMap().toString());
 				return;
+			};
+			$scope.searchByKeyword = function () {
+				$scope.map.hotels = [];
+				$scope.searchByKeywordAndPage();
+			};
+			$scope.searchByKeywordAndPage = function (page) {
+				travel.searchByKeyword($scope.query.keyword, function (data, status) {
+					$scope.currentPage = data.pagingInfo.page;
+					$scope.pageCount = data.pagingInfo.pageCount;
+					$scope.map.fit = true;
+					injectHotels(data.hotels, true);
+				}, page);
+			};
+			function injectHotels(hotels, open) {
+				_.each(hotels, function (hotel) {
+					if (_.find($scope.map.hotels, function (h) {
+							return h.id == hotel.hotel[0].hotelBasicInfo.hotelNo;
+						})) {
+						return;
+					}
+					hotel.id = hotel.hotel[0].hotelBasicInfo.hotelNo;
+					hotel.latitude = hotel.hotel[0].hotelBasicInfo.latitude;
+					hotel.longitude = hotel.hotel[0].hotelBasicInfo.longitude;
+					hotel.showWindow = false;
+
+					var ratingInfo = hotel.hotel[1].hotelRatingInfo;
+					var accumulatedRating = ratingInfo.serviceAverage + ratingInfo.locationAverage + ratingInfo.roomAverage + ratingInfo.equipmentAverage + ratingInfo.bathAverage + ratingInfo.mealAverage;
+					hotel.overallRating = Math.floor(accumulatedRating / 6);
+
+					if (hotel.overallRating >= 4) {
+						hotel.icon = '/app/main/img/marker_red.png';
+					} else if (hotel.overallRating == 3) {
+						hotel.icon = '/app/main/img/marker_green.png';
+					} else {
+						hotel.icon = '/app/main/img/marker_blue.png';
+					}
+					// hotel.icon = hotel.overallRating >= 4 ? '/app/main/img/marker_red.png' : '/app/main/img/marker_blue.png';
+					hotel.visualRating = "";
+					for (var i = 0; i < 5; i++) {
+						hotel.visualRating += i < hotel.overallRating ? "★" : "☆";
+					}
+
+					$scope.map.hotels.push(hotel);
+					$scope.rightSlidingIsOpen = open;
+				});
+				$timeout(function () {
+					FB.XFBML.parse();
+				}, 2000);
 			}
 
 			// GoogleMap End

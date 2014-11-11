@@ -56,7 +56,7 @@ angular.module('travelIntelligenceApp')
 		$timeout(function () {
 			$http.get(previxUrlLocation + "&latitude=" + lat + "&longitude=" + long + "&datumType=1&searchRadius=" + rad.toFixed(1) + applicationid + "&page=" + nextPage).success(function (data) {
 				callback(data);
-				getByLocationAndPage(data, callback);
+				getByLocationAndPage(data, lat, long, rad, callback);
 			});
 		}, interval);
 	}

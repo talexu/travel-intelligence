@@ -122,17 +122,23 @@ angular.module('travelIntelligenceApp')
 				maps.visualRefresh = true;
 
 				$scope.$watch('map.center', function (newValue, oldValue) {
-					var distance = 6;
+					searchByLocation();
+				}, true);
+				$scope.$watch('map.zoom', function (newValue, oldValue) {
+					searchByLocation();
+				}, true);
+			});
+			function searchByLocation() {
+				var distance = 6;
 					if ($scope.map.bounds.northeast && $scope.map.bounds.southwest) {
 						distance = geolib.getDistance($scope.map.bounds.northeast, $scope.map.bounds.southwest) / 1000;
 						$log.info("distance: " + distance);
 					}
-					travel.searchByLocation(newValue, distance / 2, function (data, status) {
+					travel.searchByLocation($scope.map.center, distance / 2, function (data, status) {
 						$scope.map.fit = false;
 						injectHotels(data.hotels);
 					});
-				}, true);
-			});
+			}
 			$scope.refreshMap = function (location) {
 				//optional param if you want to refresh you can pass null undefined or false or empty arg
 				$scope.map.control.refresh(location);

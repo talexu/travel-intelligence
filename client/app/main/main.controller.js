@@ -59,7 +59,7 @@ angular.module('travelIntelligenceApp')
 						maxZoom : 20,
 						minZoom : 3
 					},
-					zoom : 6,
+					zoom : 14,
 					fit : true,
 					doClusterRandomMarkers : true,
 					bounds : {},
@@ -176,7 +176,7 @@ angular.module('travelIntelligenceApp')
 
 					var ratingInfo = hotel.hotel[1].hotelRatingInfo;
 					var accumulatedRating = ratingInfo.serviceAverage + ratingInfo.locationAverage + ratingInfo.roomAverage + ratingInfo.equipmentAverage + ratingInfo.bathAverage + ratingInfo.mealAverage;
-					hotel.overallRating = Math.floor(accumulatedRating / 6);
+					hotel.overallRating = Math.round(accumulatedRating / 6);
 
 					if (hotel.overallRating >= 4) {
 						hotel.icon = '/app/main/img/marker_red.png';

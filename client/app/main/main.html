@@ -1,37 +1,47 @@
 <div id="btn_open" class="pull-right" ng-click="rightSlidingIsOpen=true">
   <span class="glyphicon glyphicon-circle-arrow-left"></span>
 </div>
-<div id="main_container" class="container-fluid" ng-click="rightSlidingIsOpen=false">
-	<div id="row_main" class="row">
-		<div id="search_panel" class="col-xs-3">
-			<form class="form-horizontal" role="form">
-				<div class="input-group">
+<div id="main_container" class="container-fluid" ng-click="rightSlidingIsOpen=false;">
+	<div id="row_search" class="row">
+		<form class="form-horizontal" role="form">
+				<div id="search_bar" class="input-group">
 				      <input type="text" class="form-control" ng-model="query.keyword">
 				      <span class="input-group-btn">
 				        <button class="btn btn-default" type="submit" ng-click="searchByKeyword()">Search</button>
 				      </span>
-				    </div><!-- /input-group -->
-				<div class="checkbox">
-					<label>
-						<input type="checkbox"> Check me out
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox"> Check me out
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox"> Check me out
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox"> Check me out
-					</label>
-				</div>
+				    </div>
 			</form>
+	</div>
+	<div id="row_main" class="row">
+		<div id="searching_results_panel" class="col-xs-3">
+			<div id="btn_order" class="btn-group pull-left" dropdown is-open="status.isopen">
+			  <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
+				Order by {{query.visualSortingExpression}} ({{query.visualSortingReverse}})<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" role="menu">
+				<li><a href="#" ng-click="doSort('overallRating','Rating',true,'High → Low');">Rating (High → Low)</a></li>
+				<li><a href="#" ng-click="doSort('overallRating','Rating',false,'Low → High');">Rating (Low → High)</a></li>
+				<li><a href="#" ng-click="doSort('hotel[0].hotelBasicInfo.hotelMinCharge','Price',true,'High → Low');">Price (High → Low)</a></li>
+				<li><a href="#" ng-click="doSort('hotel[0].hotelBasicInfo.hotelMinCharge','Price',false,'Low → High');">Price (Low → High)</a></li>
+			  </ul>
+			</div>
+			<div class="searching_result_statistics">
+					<p>Total result: {{map.hotels.length}}</p>
+				</div>
+				<div class="row searching_result_item" ng-repeat="hotel in map.hotels">
+					<img class="searching_result_img" src="{{hotel.hotel[0].hotelBasicInfo.hotelThumbnailUrl}}"/>
+					<div class="row searching_result_description">
+							<a ng-href="{{hotel.hotel[0].hotelBasicInfo.hotelInformationUrl}}" target="_blank">{{hotel.hotel[0].hotelBasicInfo.hotelName}}</a>
+							<p class="searching_result_price" ng-show="{{hotel.hotel[0].hotelBasicInfo.hotelMinCharge}}">{{hotel.hotel[0].hotelBasicInfo.hotelMinCharge}}円</p>
+							<p class="searching_result_special">{{hotel.hotel[0].hotelBasicInfo.hotelSpecial}}</p>
+							<!--<div class="fb-like" layout="button_count" href="{{hotel.hotel[0].hotelBasicInfo.hotelInformationUrl}}"></div>-->
+							<rating class="searching_result_rating" ng-model="hotel.overallRating" max="5" readonly="true"></rating>
+						</div>
+						<div class="row searching_result_description">
+							
+						</div>
+				</div>
+				<!-- <a ng-href="#" ng-show="currentPage<pageCount" class="searching_result_loadmore" ng-click="searchByKeywordAndPage(currentPage+1)">Load more</a> -->
 		</div>
 		<ui-gmap-google-map id="googlemap" class="col-xs-9"
 						 center="map.center"
@@ -69,28 +79,9 @@
 	</div>
 </div>
 <pageslide ps-size="400px" ps-open="rightSlidingIsOpen">
-    <div id="right-sliding-panel">
-			<div id="searching_results_panel">
-				<div class="searching_result_statistics">
-					<p>Total result: {{map.hotels.length}}</p>
-				</div>
-				<div class="row searching_result_item" ng-repeat="hotel in map.hotels">
-					<div class="col-xs-3 searching_result_img_container">
-						<a ng-href="{{hotel.hotel[0].hotelBasicInfo.hotelInformationUrl}}" target="_blank"><img class="searching_result_img" src="{{hotel.hotel[0].hotelBasicInfo.hotelThumbnailUrl}}"/></a>
-					</div>
-					<div class="col-xs-9">
-						<div class="row searching_result_description">
-							<a ng-href="{{hotel.hotel[0].hotelBasicInfo.hotelInformationUrl}}" target="_blank">{{hotel.hotel[0].hotelBasicInfo.hotelName}}</a>
-							<p class="searching_result_price" ng-show="{{hotel.hotel[0].hotelBasicInfo.hotelMinCharge}}">{{hotel.hotel[0].hotelBasicInfo.hotelMinCharge}}円</p>
-							<p class="searching_result_special">{{hotel.hotel[0].hotelBasicInfo.hotelSpecial}}</p>
-						</div>
-						<div class="row searching_result_description">
-							<!--<div class="fb-like" layout="button_count" href="{{hotel.hotel[0].hotelBasicInfo.hotelInformationUrl}}"></div>-->
-							<rating class="searching_result_rating" ng-model="hotel.overallRating" max="5" readonly="true"></rating>
-						</div>
-					</div>
-				</div>
-				<!-- <a ng-href="#" ng-show="currentPage<pageCount" class="searching_result_loadmore" ng-click="searchByKeywordAndPage(currentPage+1)">Load more</a> -->
+	<div id="right-sliding-panel">
+			<div>
+				
 			</div>
     </div>
 </pageslide>

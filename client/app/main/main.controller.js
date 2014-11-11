@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('travelIntelligenceApp')
-.controller('MainCtrl', ['$scope', '$timeout', 'GoogleMapApi'.ns(), 'Logger'.ns(), 'facebook', 'travel', function ($scope, $timeout, GoogleMapApi, $log, facebook, travel) {
+.controller('MainCtrl', ['$scope', '$filter', '$timeout', 'GoogleMapApi'.ns(), 'Logger'.ns(), 'facebook', 'travel', function ($scope, $filter, $timeout, GoogleMapApi, $log, facebook, travel) {
 			$log.doLog = true;
 
 			// init
@@ -15,16 +15,20 @@ angular.module('travelIntelligenceApp')
 
 			function resize() {
 				var windowHeight = $(window).height();
-				var contentHeight = windowHeight - $('#navigation').height() - 30;
+				var contentHeight = windowHeight - $('#navigation').height() - $('#row_search').height() - 35;
 				$('#row_main').height(contentHeight);
 				$('.angular-google-map-container').height(contentHeight);
-				$('#searching_results_panel').height(windowHeight);
+				$('#searching_results_panel').height(contentHeight);
 			}
 			// init end
 
 			// search
 			$scope.query = {
-				keyword : '品川'
+				keyword : '品川',
+				sortingExpression : 'overallRating',
+				visualSortingExpression : 'Rating',
+				sortingReverse : true,
+				visualSortingReverse : 'High → Low',
 			};
 			$scope.currentPage = 0;
 			$scope.pageCount = 0;
@@ -151,6 +155,13 @@ angular.module('travelIntelligenceApp')
 					injectHotels(data.hotels, true);
 				}, page);
 			};
+			$scope.doSort = function(expression, vexpression, reverse, vreverse) {
+				$scope.query.sortingExpression = expression;
+				$scope.query.visualSortingExpression = vexpression;
+				$scope.query.sortingReverse = reverse;
+				$scope.query.visualSortingReverse = vreverse;
+				sortHotels();
+			};
 			function injectHotels(hotels, open) {
 				_.each(hotels, function (hotel) {
 					if (_.find($scope.map.hotels, function (h) {
@@ -183,11 +194,16 @@ angular.module('travelIntelligenceApp')
 					$scope.map.hotels.push(hotel);
 					$scope.rightSlidingIsOpen = open;
 				});
+				sortHotels();
 				$timeout(function () {
 					FB.XFBML.parse();
 				}, 2000);
 			}
 
+			function sortHotels() {
+				$scope.map.hotels = $filter('orderBy')($scope.map.hotels, $scope.query.sortingExpression, $scope.query.sortingReverse);
+			}
+			
 			// GoogleMap End
 
 			// Chat

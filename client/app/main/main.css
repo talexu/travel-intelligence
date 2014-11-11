@@ -1,9 +1,15 @@
 #main_container {
 	padding-left: 20px;
-	padding-right: 50px;
+	padding-right: 20px;
 }
 #row_main {
-	
+	margin-left: -25px;
+	margin-right: 0px;
+}
+#search_bar {
+	max-width: 500px;
+	margin-left: 15px;
+	margin-bottom: 20px;
 }
 #search_panel {
 	height: 100%;
@@ -29,6 +35,10 @@
 }
 #btn_open {
 	font-size: 18px;
+	margin-right: 10px;
+}
+#btn_order {
+	margin-left: 10px;
 	margin-right: 10px;
 }
 #searching_results_panel {
@@ -65,7 +75,7 @@
 .searching_result_statistics {
 	margin-top: 10px;
 	margin-bottom: 10px;
-	margin-left: 15px;
+	margin-left: 10px;
 	margin-right: 0px;
 }
 .searching_result_item {
@@ -79,7 +89,9 @@
 	display: flex;
 }
 .searching_result_img {
-	margin: auto;
+	min-width: 100px;
+	min-height: 100px;
+	padding: 10px;
 }
 .searching_result_description {
 	margin: 0px;

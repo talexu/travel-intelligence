@@ -131,15 +131,16 @@ angular.module('travelIntelligenceApp')
 				}, true);
 			});
 			function searchByLocation() {
+				$scope.map.fit = false;
+				filterHotels();
 				var distance = 6;
-					if ($scope.map.bounds.northeast && $scope.map.bounds.southwest) {
-						distance = geolib.getDistance($scope.map.bounds.northeast, $scope.map.bounds.southwest) / 1000;
-					}
-					travel.searchByLocation($scope.map.center, distance / 2, function (data, status) {
-						$scope.map.fit = false;
-						filterHotels();
-						injectHotels(data.hotels, SOURCE_LOCATION);
-					});
+				if ($scope.map.bounds.northeast && $scope.map.bounds.southwest) {
+					distance = geolib.getDistance($scope.map.bounds.northeast, $scope.map.bounds.southwest) / 1000;
+				}
+				travel.searchByLocation($scope.map.center, distance / 2, function (data, status) {
+					filterHotels();
+					injectHotels(data.hotels, SOURCE_LOCATION);
+				});
 			}
 			$scope.refreshMap = function (location) {
 				//optional param if you want to refresh you can pass null undefined or false or empty arg
@@ -163,7 +164,7 @@ angular.module('travelIntelligenceApp')
 					injectHotels(data.hotels, SOURCE_KEYWORD);
 				}, page);
 			};
-			$scope.doSort = function(expression, vexpression, reverse, vreverse) {
+			$scope.doSort = function (expression, vexpression, reverse, vreverse) {
 				$scope.query.sortingExpression = expression;
 				$scope.query.visualSortingExpression = vexpression;
 				$scope.query.sortingReverse = reverse;
@@ -202,38 +203,58 @@ angular.module('travelIntelligenceApp')
 
 					$scope.map.hotels.push(hotel);
 				});
-				
+
 				sortHotels();
 				$timeout(function () {
 					FB.XFBML.parse();
 				}, 2000);
 			}
-			
+
 			function filterHotels() {
 				$scope.map.hotels = $filter('filter')($scope.map.hotels, function (value, index) {
-					if (!value) {
-						return false;
-					}
-					if (!value.latitude || !value.longitude) {
-						return false;
-					}
-					if (value.source == SOURCE_KEYWORD) {
-						return true;
-					} else {
-						var diameter = geolib.getDistance($scope.map.bounds.northeast, $scope.map.bounds.southwest);
-						var center = $scope.map.center;
-						var distance = geolib.getDistance(center, {"latitude": value.latitude, "longitude": value.longitude});
-						if (distance <= diameter * 0.5) {
-							return true;
+						if (!value) {
+							return false;
 						}
-					}
-					return false;
-				}, true);
+						if (!value.latitude || !value.longitude) {
+							return false;
+						}
+						if (value.source == SOURCE_KEYWORD) {
+							return true;
+						} else {
+							//var diameter = geolib.getDistance($scope.map.bounds.northeast, $scope.map.bounds.southwest);
+							//var center = $scope.map.center;
+							//var distance = geolib.getDistance(center, {"latitude": value.latitude, "longitude": value.longitude});
+							//if (distance <= diameter * 0.5) {
+							//return true;
+							//}
+							var ne = $scope.map.bounds.northeast;
+							var sw = $scope.map.bounds.southwest;
+							return geolib.isPointInside({
+								latitude : value.latitude,
+								longitude : value.longitude
+							},
+								[{
+										latitude : ne.latitude,
+										longitude : ne.longitude
+									}, {
+										latitude : ne.latitude,
+										longitude : sw.longitude
+									}, {
+										latitude : sw.latitude,
+										longitude :  sw.longitude
+									}, {
+										latitude :  sw.latitude,
+										longitude :  ne.longitude
+									}
+								]); // -> true
+						}
+						return false;
+					}, true);
 			}
 			function sortHotels() {
 				$scope.map.hotels = $filter('orderBy')($scope.map.hotels, $scope.query.sortingExpression, $scope.query.sortingReverse);
 			}
-			
+
 			// GoogleMap End
 
 			// Chat

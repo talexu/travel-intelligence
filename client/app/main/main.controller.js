@@ -5,6 +5,7 @@ angular.module('travelIntelligenceApp')
 			$log.doLog = true;
 			var SOURCE_KEYWORD = 'keyword';
 			var SOURCE_LOCATION = 'location';
+			var googleMapLoaded = false;
 
 			// init
 			$scope.$on('$viewContentLoaded', function (event) {
@@ -87,6 +88,7 @@ angular.module('travelIntelligenceApp')
 						"minimumClusterSize" : 4
 					},
 					hotels : [],
+					markers : [],
 					testHotels : [{
 							id : 1,
 							latitude : 45,
@@ -129,6 +131,15 @@ angular.module('travelIntelligenceApp')
 				$scope.$watch('map.zoom', function (newValue, oldValue) {
 					searchByLocation();
 				}, true);
+
+				navigator.geolocation.getCurrentPosition(
+					function (position) {
+					$log.info(position.coords);
+					$scope.map.center = {
+						latitude : position.coords.latitude,
+						longitude : position.coords.longitude
+					};
+				});
 			});
 			function searchByLocation() {
 				$scope.map.fit = false;
@@ -173,11 +184,19 @@ angular.module('travelIntelligenceApp')
 			};
 			function injectHotels(hotels, source) {
 				_.each(hotels, function (hotel) {
-					if (_.find($scope.map.hotels, function (h) {
+					var hotelInResultingList = _.find($scope.map.hotels, function (h) {
 							return h.id == hotel.hotel[0].hotelBasicInfo.hotelNo;
-						})) {
+						});
+					var hotelInTheViewList = _.find($scope.map.markers, function (h) {
+							return h.id == hotel.hotel[0].hotelBasicInfo.hotelNo;
+						});
+					if (hotelInResultingList && hotelInTheViewList) {
+						if (isInViewArea(hotelInResultingList) && !hotelInTheViewList) {
+							$scope.map.markers.push(hotelInResultingList);
+						}
 						return;
 					}
+
 					hotel.source = source;
 					hotel.id = hotel.hotel[0].hotelBasicInfo.hotelNo;
 					hotel.latitude = hotel.hotel[0].hotelBasicInfo.latitude;
@@ -201,6 +220,9 @@ angular.module('travelIntelligenceApp')
 						hotel.visualRating += i < hotel.overallRating ? "★" : "☆";
 					}
 
+					if (isInViewArea(hotel)) {
+						$scope.map.markers.push(hotel);
+					}
 					$scope.map.hotels.push(hotel);
 				});
 
@@ -210,45 +232,55 @@ angular.module('travelIntelligenceApp')
 				}, 2000);
 			}
 
+			function isInViewArea(location) {
+				if (!location) {
+					return false;
+				}
+				if (!location.latitude || !location.longitude) {
+					return false;
+				} else {
+					var ne = $scope.map.bounds.northeast;
+					var sw = $scope.map.bounds.southwest;
+					if (!ne || !sw) {
+						return true;
+					}
+					// if (location.latitude > ne.latitude || location.latitude < sw.latitude){
+					// return false;
+					// }
+					// if (location.longitude > ne.longitude || location.longitude < sw.longitude){
+					// return false;
+					// }
+					return geolib.isPointInside({
+						latitude : location.latitude,
+						longitude : location.longitude
+					},
+						[{
+								latitude : ne.latitude,
+								longitude : ne.longitude
+							}, {
+								latitude : ne.latitude,
+								longitude : sw.longitude
+							}, {
+								latitude : sw.latitude,
+								longitude : sw.longitude
+							}, {
+								latitude : sw.latitude,
+								longitude : ne.longitude
+							}
+						]);
+				}
+				return false;
+			}
 			function filterHotels() {
-				$scope.map.hotels = $filter('filter')($scope.map.hotels, function (value, index) {
+				$scope.map.markers = $filter('filter')($scope.map.hotels, function (value, index) {
 						if (!value) {
-							return false;
-						}
-						if (!value.latitude || !value.longitude) {
 							return false;
 						}
 						if (value.source == SOURCE_KEYWORD) {
 							return true;
 						} else {
-							//var diameter = geolib.getDistance($scope.map.bounds.northeast, $scope.map.bounds.southwest);
-							//var center = $scope.map.center;
-							//var distance = geolib.getDistance(center, {"latitude": value.latitude, "longitude": value.longitude});
-							//if (distance <= diameter * 0.5) {
-							//return true;
-							//}
-							var ne = $scope.map.bounds.northeast;
-							var sw = $scope.map.bounds.southwest;
-							return geolib.isPointInside({
-								latitude : value.latitude,
-								longitude : value.longitude
-							},
-								[{
-										latitude : ne.latitude,
-										longitude : ne.longitude
-									}, {
-										latitude : ne.latitude,
-										longitude : sw.longitude
-									}, {
-										latitude : sw.latitude,
-										longitude :  sw.longitude
-									}, {
-										latitude :  sw.latitude,
-										longitude :  ne.longitude
-									}
-								]); // -> true
+							return isInViewArea(value);
 						}
-						return false;
 					}, true);
 			}
 			function sortHotels() {

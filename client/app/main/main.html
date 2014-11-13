@@ -26,7 +26,7 @@
 			  </ul>
 			</div>
 			<div class="searching_result_statistics">
-					<p>Total result: {{map.hotels.length}}</p>
+					<p>Total result: {{map.hotels.length}}({{map.markers.length}})</p>
 				</div>
 				<div class="row searching_result_item" ng-repeat="hotel in map.hotels">
 					<img class="searching_result_img" src="{{hotel.hotel[0].hotelBasicInfo.hotelThumbnailUrl}}"/>
@@ -52,7 +52,7 @@
 		         options="map.options"
 		         pan="true"
 		         control="map.control">
-			<ui-gmap-markers models="map.hotels" coords="'self'" icon="'icon'" fit='map.fit' doCluster="map.doClusterRandomMarkers" clusterOptions="map.clusterOptions" clusterEvents="map.clusterEvents" click="'showWindow=!showWindow'">
+			<ui-gmap-markers models="map.markers" coords="'self'" icon="'icon'" fit='map.fit' doCluster="map.doClusterRandomMarkers" clusterOptions="map.clusterOptions" clusterEvents="map.clusterEvents" click="'showWindow=!showWindow'">
 				<ui-gmap-windows show="showWindow">
           <div>
 						<div class="pull-left">

@@ -66,11 +66,17 @@ angular.module('travelIntelligenceApp')
 					fit : true,
 					doClusterRandomMarkers : true,
 					bounds : {},
-					dragging : true,
+					dragging : false,
 					events : {
 						// center_changed: function (map, eventName, originalEventArgs) {
 						// 							$log.info(originalEventArgs);
 						// 						}
+						dragend : function (map, eventName, originalEventArgs) {
+							searchByLocation();
+						},
+						zoom_changed : function (map, eventName, originalEventArgs) {
+							searchByLocation();
+						},
 					},
 					clusterEvents : {
 						mouseover : function (cluster, clusterModels) {
@@ -79,7 +85,7 @@ angular.module('travelIntelligenceApp')
 								sum += model.hotel[0].hotelBasicInfo.hotelMinCharge;
 							});
 							// alert(sum / clusterModels.length);
-							$log.info(sum / clusterModels.length);
+							// $log.info(sum / clusterModels.length);
 						}
 					},
 					clusterOptions : {
@@ -89,56 +95,29 @@ angular.module('travelIntelligenceApp')
 					},
 					hotels : [],
 					markers : [],
-					testHotels : [{
-							id : 1,
-							latitude : 45,
-							longitude : -74,
-							showWindow : false,
-							options : {
-								animation : 1,
-								labelContent : 'Markers id 1',
-								labelAnchor : "22 0",
-								labelClass : "marker-labels"
-							}
-						}, {
-							id : 2,
-							latitude : 15,
-							longitude : 30,
-							showWindow : false,
-						}, {
-							id : 3,
-							icon : 'assets/images/plane.png',
-							latitude : 37,
-							longitude : -122,
-							showWindow : false,
-							title : 'Plane',
-							options : {
-								labelContent : 'Markers id 3',
-								labelAnchor : "26 0",
-								labelClass : "marker-labels"
-							}
-						}
-					],
 				},
 			});
 			GoogleMapApi.then(function (maps) {
 				$scope.googleVersion = maps.version;
 				maps.visualRefresh = true;
 
-				$scope.$watch('map.center', function (newValue, oldValue) {
-					searchByLocation();
-				}, true);
-				$scope.$watch('map.zoom', function (newValue, oldValue) {
-					searchByLocation();
-				}, true);
+				// $scope.$watch('map.center', function (newValue, oldValue) {
+				// $log.info("dragging = "+!$scope.map.dragging);
+				// if(!$scope.map.dragging){
+				// searchByLocation();
+				// }
+				// }, true);
+				// $scope.$watch('map.zoom', function (newValue, oldValue) {
+				// searchByLocation();
+				// }, true);
 
 				navigator.geolocation.getCurrentPosition(
 					function (position) {
-					$log.info(position.coords);
 					$scope.map.center = {
 						latitude : position.coords.latitude,
 						longitude : position.coords.longitude
 					};
+					searchByLocation();
 				});
 			});
 			function searchByLocation() {
@@ -165,13 +144,14 @@ angular.module('travelIntelligenceApp')
 			};
 			$scope.searchByKeyword = function () {
 				$scope.map.hotels = [];
+				$scope.map.markers = [];
 				$scope.searchByKeywordAndPage();
 			};
 			$scope.searchByKeywordAndPage = function (page) {
+				$scope.map.fit = true;
 				travel.searchByKeyword($scope.query.keyword, function (data, status) {
 					$scope.currentPage = data.pagingInfo.page;
 					$scope.pageCount = data.pagingInfo.pageCount;
-					$scope.map.fit = true;
 					injectHotels(data.hotels, SOURCE_KEYWORD);
 				}, page);
 			};
@@ -220,9 +200,7 @@ angular.module('travelIntelligenceApp')
 						hotel.visualRating += i < hotel.overallRating ? "★" : "☆";
 					}
 
-					if (isInViewArea(hotel)) {
-						$scope.map.markers.push(hotel);
-					}
+					$scope.map.markers.push(hotel);
 					$scope.map.hotels.push(hotel);
 				});
 

@@ -256,15 +256,15 @@ angular.module('travelIntelligenceApp')
 					},
 						[{
 								latitude : ne.latitude,
+								longitude : sw.longitude
+							}, {
+								latitude : sw.latitude,
+								longitude : sw.longitude
+							}, {
+								latitude : sw.latitude,
 								longitude : ne.longitude
 							}, {
 								latitude : ne.latitude,
-								longitude : sw.longitude
-							}, {
-								latitude : sw.latitude,
-								longitude : sw.longitude
-							}, {
-								latitude : sw.latitude,
 								longitude : ne.longitude
 							}
 						]);

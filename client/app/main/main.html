@@ -1,8 +1,34 @@
-<div id="btn_open" class="pull-right" ng-click="rightSlidingIsOpen=true">
-  <span class="glyphicon glyphicon-circle-arrow-left"></span>
-</div>
+<nav id="navigation" class="navbar navbar-default nav-bar" role="navigation">
+	<div class="container-fluid">
+		<ul class="nav navbar-nav navbar-left">
+			<li><a ng-href="/" target="_blank">Hotel</a></li>
+		</ul>
+		<form class="navbar-form navbar-left" role="search" ng-submit="searchByKeyword()">
+      <div class="form-group">
+        <input type="text" class="form-control" ng-model="query.keyword" placeholder="Search">
+      </div>
+      <button type="submit" class="btn btn-default" >Search</button>
+    </form>
+		<ul class="nav navbar-nav navbar-right">
+			<li>
+				<a><fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button></a>
+			</li>
+			<li>
+				<a><div id="status"></div></a>
+			</li>
+			<li><a ng-href="/about" target="_blank">About</a></li>
+			<li>
+				<a><div id="btn_open" ng-click="rightSlidingIsOpen=true">
+				  <span class="glyphicon glyphicon-circle-arrow-left"></span>
+				</div></a>
+			</li>
+		</ul>
+	</div>
+</nav>
+
 <div id="main_container" class="container-fluid" ng-click="rightSlidingIsOpen=false;">
-	<div id="row_search" class="row">
+	<!-- <div id="row_search" class="row">
 		<form class="form-horizontal" role="form">
 				<div id="search_bar" class="input-group">
 				      <input type="text" class="form-control" ng-model="query.keyword">
@@ -11,7 +37,7 @@
 				      </span>
 				    </div>
 			</form>
-	</div>
+	</div> -->
 	<div id="row_main" class="row">
 		<div id="searching_results_panel" class="col-xs-3">
 			<div id="btn_order" class="btn-group pull-left" dropdown is-open="status.isopen">
@@ -78,10 +104,26 @@
 		</ui-gmap-google-map>
 	</div>
 </div>
-<pageslide ps-size="400px" ps-open="rightSlidingIsOpen">
+<pageslide ps-size="300px" ps-open="rightSlidingIsOpen">
 	<div id="right-sliding-panel">
-			<div>
-				
+			<div class="panel">
+			  <!-- <div class="panel-heading">Panel heading without title</div> -->
+			  <div class="panel-body">
+					<ul id="chatting_panel" class="list-unstyled">
+						<!-- <dl ng-repeat="rmessages in chat.messages">
+						  <dt><a ng-href="{{rmessages.link}}" target="_blank">{{rmessages.name}}</a></dt>
+						  <dd>{{rmessages.message}}</dd>
+						</dl> -->
+					</ul>
+					<form id="typing_box" class="form-horizontal" role="form" ng-submit="chat.sendMessage()">
+						<div class="input-group">
+				      <input type="text" class="form-control" ng-model="chat.message" placeholder="Type message here">
+				      <span class="input-group-btn">
+				        <button class="btn btn-default" type="submit">Send</button>
+				      </span>
+				    </div>
+					</form>
+			  </div>
 			</div>
     </div>
 </pageslide>

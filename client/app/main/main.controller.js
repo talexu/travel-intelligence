@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('travelIntelligenceApp')
-.controller('MainCtrl', ['$scope', '$filter', '$timeout', 'GoogleMapApi'.ns(), 'Logger'.ns(), 'facebook', 'travel', function ($scope, $filter, $timeout, GoogleMapApi, $log, facebook, travel) {
+.controller('MainCtrl', ['$scope', '$filter', '$timeout', 'GoogleMapApi'.ns(), 'Logger'.ns(), 'facebook', 'travel', 'socket', function ($scope, $filter, $timeout, GoogleMapApi, $log, facebook, travel, socket) {
 			$log.doLog = true;
 			var SOURCE_KEYWORD = 'keyword';
 			var SOURCE_LOCATION = 'location';
@@ -18,10 +18,11 @@ angular.module('travelIntelligenceApp')
 
 			function resize() {
 				var windowHeight = $(window).height();
-				var contentHeight = windowHeight - $('#navigation').height() - $('#row_search').height() - 35;
+				var contentHeight = windowHeight - $('#navigation').height() - 35;
 				$('#row_main').height(contentHeight);
 				$('.angular-google-map-container').height(contentHeight);
 				$('#searching_results_panel').height(contentHeight);
+				$('#chatting_panel').height(windowHeight - $('#typing_box').height() - 45);
 			}
 			// init end
 
@@ -268,20 +269,55 @@ angular.module('travelIntelligenceApp')
 			// GoogleMap End
 
 			// Chat
-			// $scope.message = 'Hello';
-			// $scope.sendMessage = function () {
-			// 	socket.emit('broadcast', {
-			// 		id : facebook.getName(),
-			// 		text : $scope.message
-			// 	});
-			// 	$("<p>" + $scope.message + "</p>").appendTo("#messages");
-			// 	$scope.message = '';
-			// }
-			//
-			// socket.on('broadcast', function (data) {
-			// 	// $scope.messages.push(data);
-			// 	$("<p>" + data.id + ": " + data.text + "</p>").appendTo("#messages");
-			// });
+			$scope.chat = {
+				id : '',
+				name : '',
+				link : '',
+				message : '',
+				messages : [
+						{
+							id : "1",
+							name : "Alice",
+							link : "http://www.facebook.com",
+							message : "Suppose",
+						},
+						{
+							id : "2",
+							name : "Bob",
+							link : "http://www.google.com",
+							message : "You are Alice",
+						},
+					],
+				sendMessage : function () {
+					var me = facebook.getMe();
+					var sentMessage = {
+						id : me.id,
+						name : me.name,
+						link : me.link,
+						message : $scope.chat.message,
+					};
+					appendMessage(sentMessage);
+					socket.emit('broadcast', sentMessage);
+					$scope.chat.message = '';
+				}
+			};
+			socket.on('broadcast', function (data) {
+				// $scope.messages.push(data);
+				appendMessage(data);
+			});
+			function appendMessage(data) {
+				var html = ["<dl>",
+				"  <dt><a href=\"",
+				data.link,
+				"\" target=\"_blank\">",
+				data.name,
+				"</a></dt>",
+				"  <dd>",
+				data.message,
+				"</dd>",
+				"</dl>"].join("");
+				$(html).appendTo("#chatting_panel");
+			}
 			// Chat end
 		}
 	]);

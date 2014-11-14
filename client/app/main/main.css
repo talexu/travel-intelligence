@@ -27,7 +27,7 @@
 }
 #right-sliding-panel {
 	height: 100%;
-	display: inline-flex;
+	padding: 0px;
 }
 #btn_hide {
 	font-size: 18px;
@@ -115,4 +115,8 @@
 }
 .angular-google-map-container {
 	height: 100%;
+}
+
+#chatting_panel {
+	overflow-y: scroll;
 }

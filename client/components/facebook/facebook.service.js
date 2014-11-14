@@ -3,9 +3,13 @@
 angular.module('travelIntelligenceApp')
   .service('facebook', function () {
     // AngularJS will instantiate a singleton by calling "new" on this function
-		var me = {name: "no name"};
-		this.getName = function () {
-		  return me.name;
+		var me = {
+			id: "",
+			name: "Anonymous",
+			link: ""
+		};
+		this.getMe = function () {
+		  return me;
 		};
 		
 		// This is called with the results from from FB.getLoginStatus().
@@ -84,7 +88,9 @@ angular.module('travelIntelligenceApp')
 		    console.log('Successful login for: ' + response.name);
 		    document.getElementById('status').innerHTML = response.name;
 					
-					me.name = response.name;
+				me.id = response.id;
+				me.name = response.name;
+				me.link = response.link;
 		  });
 		}
   });

@@ -10,7 +10,7 @@ exports.register = function(socket) {
   data = {id, type, location}
   */
   socket.on('move', function (data) {
-	console.info('[%s]', JSON.stringify(data, null, 2));
-	socket.broadcast.emit('move', data);
+		console.info('[%s]', JSON.stringify(data, null, 2));
+		socket.broadcast.emit('move', data);
   });
 }

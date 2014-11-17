@@ -60,7 +60,7 @@
 							<a ng-href="{{hotel.hotel[0].hotelBasicInfo.hotelInformationUrl}}" target="_blank">{{hotel.hotel[0].hotelBasicInfo.hotelName}}</a>
 							<p class="searching_result_price" ng-show="{{hotel.hotel[0].hotelBasicInfo.hotelMinCharge}}">{{hotel.hotel[0].hotelBasicInfo.hotelMinCharge}}円</p>
 							<p class="searching_result_special">{{hotel.hotel[0].hotelBasicInfo.hotelSpecial}}</p>
-							<!--<div class="fb-like" layout="button_count" href="{{hotel.hotel[0].hotelBasicInfo.hotelInformationUrl}}"></div>-->
+							<div class="fb-like" layout="button_count" href="{{hotel.hotel[0].hotelBasicInfo.hotelInformationUrl}}"></div>
 							<rating class="searching_result_rating" ng-model="hotel.overallRating" max="5" readonly="true"></rating>
 						</div>
 						<div class="row searching_result_description">

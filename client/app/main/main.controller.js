@@ -171,7 +171,7 @@ angular.module('travelIntelligenceApp')
 					var hotelInTheViewList = _.find($scope.map.markers, function (h) {
 							return h.id == hotel.hotel[0].hotelBasicInfo.hotelNo;
 						});
-					if (hotelInResultingList && hotelInTheViewList) {
+					if (hotelInResultingList) {
 						if (isInViewArea(hotelInResultingList) && !hotelInTheViewList) {
 							$scope.map.markers.push(hotelInResultingList);
 						}

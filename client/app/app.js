@@ -7,7 +7,8 @@ angular.module('travelIntelligenceApp', [
   'ui.router',
   'ui.bootstrap',
 	'google-maps'.ns(),
-	"pageslide-directive"
+	'pageslide-directive',
+	'luegg.directives'
 ])
 	.config(['GoogleMapApiProvider'.ns(), function (GoogleMapApi) {
 	    GoogleMapApi.configure({

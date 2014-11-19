@@ -252,20 +252,7 @@ angular.module('travelIntelligenceApp')
 				name : '',
 				link : '',
 				message : '',
-				messages : [
-						{
-							id : "1",
-							name : "Alice",
-							link : "http://www.facebook.com",
-							message : "Suppose",
-						},
-						{
-							id : "2",
-							name : "Bob",
-							link : "http://www.google.com",
-							message : "You are Alice",
-						},
-					],
+				messages : [],
 				sendMessage : function () {
 					var me = facebook.getMe();
 					var mess = $scope.chat.message;

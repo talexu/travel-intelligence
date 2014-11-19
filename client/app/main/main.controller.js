@@ -28,7 +28,7 @@ angular.module('travelIntelligenceApp')
 
 			// search
 			$scope.query = {
-				keyword : '品川',
+				keyword : '',
 				sortingExpression : 'overallRating',
 				visualSortingExpression : 'Rating',
 				sortingReverse : true,
@@ -69,9 +69,6 @@ angular.module('travelIntelligenceApp')
 					bounds : {},
 					dragging : false,
 					events : {
-						// center_changed: function (map, eventName, originalEventArgs) {
-						// 							$log.info(originalEventArgs);
-						// 						}
 						dragend : function (map, eventName, originalEventArgs) {
 							searchByLocation();
 						},
@@ -85,8 +82,6 @@ angular.module('travelIntelligenceApp')
 							_.each(clusterModels, function (model) {
 								sum += model.hotel[0].hotelBasicInfo.hotelMinCharge;
 							});
-							// alert(sum / clusterModels.length);
-							// $log.info(sum / clusterModels.length);
 						}
 					},
 					clusterOptions : {
@@ -101,16 +96,6 @@ angular.module('travelIntelligenceApp')
 			GoogleMapApi.then(function (maps) {
 				$scope.googleVersion = maps.version;
 				maps.visualRefresh = true;
-
-				// $scope.$watch('map.center', function (newValue, oldValue) {
-				// $log.info("dragging = "+!$scope.map.dragging);
-				// if(!$scope.map.dragging){
-				// searchByLocation();
-				// }
-				// }, true);
-				// $scope.$watch('map.zoom', function (newValue, oldValue) {
-				// searchByLocation();
-				// }, true);
 
 				navigator.geolocation.getCurrentPosition(
 					function (position) {
@@ -195,7 +180,6 @@ angular.module('travelIntelligenceApp')
 					} else {
 						hotel.icon = '/app/main/img/marker_blue.png';
 					}
-					// hotel.icon = hotel.overallRating >= 4 ? '/app/main/img/marker_red.png' : '/app/main/img/marker_blue.png';
 					hotel.visualRating = "";
 					for (var i = 0; i < 5; i++) {
 						hotel.visualRating += i < hotel.overallRating ? "★" : "☆";
@@ -223,12 +207,6 @@ angular.module('travelIntelligenceApp')
 					if (!ne || !sw) {
 						return true;
 					}
-					// if (location.latitude > ne.latitude || location.latitude < sw.latitude){
-					// return false;
-					// }
-					// if (location.longitude > ne.longitude || location.longitude < sw.longitude){
-					// return false;
-					// }
 					return geolib.isPointInside({
 						latitude : location.latitude,
 						longitude : location.longitude
@@ -290,15 +268,24 @@ angular.module('travelIntelligenceApp')
 					],
 				sendMessage : function () {
 					var me = facebook.getMe();
+					var mess = $scope.chat.message;
+					$scope.chat.message = '';
+					
+					var re = /\/rename (.+)/g;
+					var match = re.exec(mess);
+					if (match){
+						me.name = match[1];
+						return;
+					}
+					
 					var sentMessage = {
 						id : me.id,
 						name : me.name,
 						link : me.link,
-						message : $scope.chat.message,
+						message : mess,
 					};
 					appendMessage(sentMessage);
 					socket.emit('broadcast', sentMessage);
-					$scope.chat.message = '';
 				}
 			};
 			socket.on('broadcast', function (data) {
